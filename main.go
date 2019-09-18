@@ -13,17 +13,17 @@ import (
 var buildVersion string
 
 func init() {
-	Apps = make(map[Application]Metric)
-}
-
-func main() {
-	start := time.Now()
-
 	var flag Flag
 	flag.Version = buildVersion
 	flag.Parse()
 
 	SetLogger(os.Stderr, flag.LogLevel, "text", false)
+
+	Apps = make(map[Application]Metric)
+}
+
+func main() {
+	start := time.Now()
 
 	f, err := os.Open(flag.HostsFile)
 	if err != nil {
