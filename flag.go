@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	defaultLogLevel = "info"
+	defaultLogLevel = "warn"
 	defaultRootURL  = "http://storage.googleapis.com/revsreinterview/hosts"
 )
 
