@@ -23,7 +23,7 @@ func TestInvalidJsonReturnsUnmarshalError(t *testing.T) {
 	defer ts.Close()
 
 	host := Host{URL: ts.URL}
-	err := host.GetHostStatus()
+	_, err := host.RequestHostStatus()
 	assert.True(strings.Contains(err.Error(), ErrUnmarshal.Error()))
 }
 
@@ -48,9 +48,9 @@ func TestGettingHostStatusSetsRequestsCount(t *testing.T) {
 			defer ts.Close()
 
 			host := Host{URL: ts.URL}
-			err := host.GetHostStatus()
+			status, err := host.RequestHostStatus()
 			assert.Nil(err)
-			assert.Equal(tt.expRequestsCount, host.Status.RequestsCount)
+			assert.Equal(tt.expRequestsCount, status.RequestsCount)
 		})
 	}
 }
@@ -76,9 +76,9 @@ func TestGettingHostStatusSetsApplication(t *testing.T) {
 			defer ts.Close()
 
 			host := Host{URL: ts.URL}
-			err := host.GetHostStatus()
+			status, err := host.RequestHostStatus()
 			assert.Nil(err)
-			assert.Equal(tt.expApplication, host.Status.Application)
+			assert.Equal(tt.expApplication, status.Application)
 		})
 	}
 }
@@ -104,9 +104,9 @@ func TestGettingHostStatusSetsVersion(t *testing.T) {
 			defer ts.Close()
 
 			host := Host{URL: ts.URL}
-			err := host.GetHostStatus()
+			status, err := host.RequestHostStatus()
 			assert.Nil(err)
-			assert.Equal(tt.expVersion, host.Status.Version)
+			assert.Equal(tt.expVersion, status.Version)
 		})
 	}
 }
@@ -132,9 +132,9 @@ func TestGettingHostStatusSetsErrorCount(t *testing.T) {
 			defer ts.Close()
 
 			host := Host{URL: ts.URL}
-			err := host.GetHostStatus()
+			status, err := host.RequestHostStatus()
 			assert.Nil(err)
-			assert.Equal(tt.expErrorCount, host.Status.ErrorCount)
+			assert.Equal(tt.expErrorCount, status.ErrorCount)
 		})
 	}
 }
@@ -160,9 +160,9 @@ func TestGettingHostStatusSetsSuccessCount(t *testing.T) {
 			defer ts.Close()
 
 			host := Host{URL: ts.URL}
-			err := host.GetHostStatus()
+			status, err := host.RequestHostStatus()
 			assert.Nil(err)
-			assert.Equal(tt.expSuccessCount, host.Status.SuccessCount)
+			assert.Equal(tt.expSuccessCount, status.SuccessCount)
 		})
 	}
 }

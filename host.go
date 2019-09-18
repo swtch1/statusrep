@@ -12,7 +12,49 @@ import (
 	"strings"
 )
 
-var ErrUnmarshal = errors.New("unable to unmarshal status response body")
+var (
+	ErrUnmarshal = errors.New("unable to unmarshal status response body")
+)
+
+// Host is an external host, with a URL, which has a status endpoint which can be queried.
+type Host struct {
+	// URL is the full URL where a host status is queried.
+	URL string
+}
+
+// HostStatus contains status information for a single host, at the time of querying.
+type HostStatus struct {
+	Application   string `json:"application"`
+	Version       string `json:"Version"`
+	RequestsCount uint   `json:"requests_count"`
+	SuccessCount  uint   `json:"success_count"`
+	ErrorCount    uint   `json:"error_count"`
+}
+
+// RequestHostStatus gets the HostStatus by making an outbound request to the host status URL.
+func (h *Host) RequestHostStatus() (HostStatus, error) {
+	var status HostStatus
+	b, err := h.getStatus()
+	if err != nil {
+		return status, err
+	}
+	if err := json.Unmarshal(b, &status); err != nil {
+		return status, errors.Wrapf(err, "%s: '%s'", ErrUnmarshal, h.URL)
+	}
+	return status, nil
+}
+
+func (h *Host) getStatus() ([]byte, error) {
+	resp, err := http.Get(h.URL)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to get status for '%s'", h.URL)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to read response body for '%s'", h.URL)
+	}
+	return body, nil
+}
 
 // ReadAllHosts returns a slice of all hosts from a newline delimited reader.
 // For example, the output from reading r will look like this:
@@ -50,45 +92,4 @@ func HostStatusURL(rootURL, host string) (string, error) {
 	}
 	u.Path = path.Join(u.Path, host, "status")
 	return u.String(), nil
-}
-
-// Host is an external host, with a URL, which has a status endpoint which can be queried.
-type Host struct {
-	// URL is the full URL where a host status is queried.
-	URL string
-	// Status is populated with status values after the request is made.
-	Status HostStatus
-}
-
-// GetHostStatus makes an outbound request to the
-func (h *Host) GetHostStatus() error {
-	b, err := h.getStatus()
-	if err != nil {
-		return err
-	}
-	if err := json.Unmarshal(b, &h.Status); err != nil {
-		return errors.Wrapf(err, "%s: '%s'", ErrUnmarshal, h.URL)
-	}
-	return nil
-}
-
-func (h *Host) getStatus() ([]byte, error) {
-	resp, err := http.Get(h.URL)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to get status for '%s'", h.URL)
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrapf(err, "unable to read response body for '%s'", h.URL)
-	}
-	return body, nil
-}
-
-// HostStatus contains status information for a single host, at the time of querying.
-type HostStatus struct {
-	RequestsCount uint   `json:"requests_count"`
-	Application   string `json:"application"`
-	Version       string `json:"Version"`
-	SuccessCount  uint   `json:"success_count"`
-	ErrorCount    uint   `json:"error_count"`
 }
