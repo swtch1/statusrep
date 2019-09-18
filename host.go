@@ -7,6 +7,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"path"
 	"strings"
 )
 
@@ -39,7 +41,18 @@ func ReadAllHosts(r io.ReadCloser) ([]string, error) {
 	return hosts, nil
 }
 
-// Host is an external host which has a status and can be queried.
+// HostURL adds a host and the status endpoint to a root url, creating the full URL where
+// a host's status page is expected.
+func HostURL(rootUrl, host string) (string, error) {
+	u, err := url.Parse(rootUrl)
+	if err != nil {
+		return "", err
+	}
+	u.Path = path.Join(u.Path, host, "status")
+	return u.String(), nil
+}
+
+// Host is an external host, with a URL, which has a status endpoint which can be queried.
 type Host struct {
 	// Url is the full URL where a host status is queried.
 	Url string

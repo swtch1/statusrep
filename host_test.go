@@ -204,3 +204,26 @@ func TestGettingHostsTrimsWhiteSpace(t *testing.T) {
 		})
 	}
 }
+
+func TestHostUrlCreation(t *testing.T) {
+	t.Parallel()
+	assert := assert.New(t)
+
+	tests := []struct {
+		rootUrl string
+		host    string
+		expUrl  string
+	}{
+		{"http://some.root.com", "host1", "http://some.root.com/host1/status"},
+		{"http://root.com", "host2", "http://root.com/host2/status"},
+		{"http://root.com:80", "host3", "http://root.com:80/host3/status"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.host, func(t *testing.T) {
+			url, err := HostURL(tt.rootUrl, tt.host)
+			assert.Nil(err)
+			assert.Equal(tt.expUrl, url)
+		})
+	}
+}
