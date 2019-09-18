@@ -57,7 +57,7 @@ func main() {
 	wg.Wait()
 
 	writeReport(os.Stdout)
-	fmt.Printf("\nreport completed in %s\n", time.Now().Sub(start).Truncate(time.Millisecond))
+	fmt.Printf("\ncompleted in %s\n", time.Now().Sub(start).Truncate(time.Millisecond))
 }
 
 func writeReport(w io.Writer) {
