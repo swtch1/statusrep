@@ -41,10 +41,10 @@ func ReadAllHosts(r io.ReadCloser) ([]string, error) {
 	return hosts, nil
 }
 
-// HostURL adds a host and the status endpoint to a root url, creating the full URL where
-// a host's status page is expected.
-func HostURL(rootUrl, host string) (string, error) {
-	u, err := url.Parse(rootUrl)
+// HostStatusURL adds a host and the status endpoint to the path of a root url,
+// creating the full URL where a host's status page is expected.
+func HostStatusURL(rootURL, host string) (string, error) {
+	u, err := url.Parse(rootURL)
 	if err != nil {
 		return "", err
 	}
@@ -54,8 +54,8 @@ func HostURL(rootUrl, host string) (string, error) {
 
 // Host is an external host, with a URL, which has a status endpoint which can be queried.
 type Host struct {
-	// Url is the full URL where a host status is queried.
-	Url string
+	// URL is the full URL where a host status is queried.
+	URL string
 	// Status is populated with status values after the request is made.
 	Status HostStatus
 }
@@ -67,19 +67,19 @@ func (h *Host) GetHostStatus() error {
 		return err
 	}
 	if err := json.Unmarshal(b, &h.Status); err != nil {
-		return errors.Wrapf(err, "%s: '%s'", ErrUnmarshal, h.Url)
+		return errors.Wrapf(err, "%s: '%s'", ErrUnmarshal, h.URL)
 	}
 	return nil
 }
 
 func (h *Host) getStatus() ([]byte, error) {
-	resp, err := http.Get(h.Url)
+	resp, err := http.Get(h.URL)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to get status for '%s'", h.Url)
+		return nil, errors.Wrapf(err, "unable to get status for '%s'", h.URL)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to read response body for '%s'", h.Url)
+		return nil, errors.Wrapf(err, "unable to read response body for '%s'", h.URL)
 	}
 	return body, nil
 }

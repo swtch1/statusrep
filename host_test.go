@@ -22,7 +22,7 @@ func TestInvalidJsonReturnsUnmarshalError(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	host := Host{Url: ts.URL}
+	host := Host{URL: ts.URL}
 	err := host.GetHostStatus()
 	assert.True(strings.Contains(err.Error(), ErrUnmarshal.Error()))
 }
@@ -47,7 +47,7 @@ func TestGettingHostStatusSetsRequestsCount(t *testing.T) {
 			}))
 			defer ts.Close()
 
-			host := Host{Url: ts.URL}
+			host := Host{URL: ts.URL}
 			err := host.GetHostStatus()
 			assert.Nil(err)
 			assert.Equal(tt.expRequestsCount, host.Status.RequestsCount)
@@ -75,7 +75,7 @@ func TestGettingHostStatusSetsApplication(t *testing.T) {
 			}))
 			defer ts.Close()
 
-			host := Host{Url: ts.URL}
+			host := Host{URL: ts.URL}
 			err := host.GetHostStatus()
 			assert.Nil(err)
 			assert.Equal(tt.expApplication, host.Status.Application)
@@ -103,7 +103,7 @@ func TestGettingHostStatusSetsVersion(t *testing.T) {
 			}))
 			defer ts.Close()
 
-			host := Host{Url: ts.URL}
+			host := Host{URL: ts.URL}
 			err := host.GetHostStatus()
 			assert.Nil(err)
 			assert.Equal(tt.expVersion, host.Status.Version)
@@ -131,7 +131,7 @@ func TestGettingHostStatusSetsErrorCount(t *testing.T) {
 			}))
 			defer ts.Close()
 
-			host := Host{Url: ts.URL}
+			host := Host{URL: ts.URL}
 			err := host.GetHostStatus()
 			assert.Nil(err)
 			assert.Equal(tt.expErrorCount, host.Status.ErrorCount)
@@ -159,7 +159,7 @@ func TestGettingHostStatusSetsSuccessCount(t *testing.T) {
 			}))
 			defer ts.Close()
 
-			host := Host{Url: ts.URL}
+			host := Host{URL: ts.URL}
 			err := host.GetHostStatus()
 			assert.Nil(err)
 			assert.Equal(tt.expSuccessCount, host.Status.SuccessCount)
@@ -205,14 +205,14 @@ func TestGettingHostsTrimsWhiteSpace(t *testing.T) {
 	}
 }
 
-func TestHostUrlCreation(t *testing.T) {
+func TestHostURLCreation(t *testing.T) {
 	t.Parallel()
 	assert := assert.New(t)
 
 	tests := []struct {
-		rootUrl string
+		rootURL string
 		host    string
-		expUrl  string
+		expURL  string
 	}{
 		{"http://some.root.com", "host1", "http://some.root.com/host1/status"},
 		{"http://root.com", "host2", "http://root.com/host2/status"},
@@ -221,9 +221,9 @@ func TestHostUrlCreation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.host, func(t *testing.T) {
-			url, err := HostURL(tt.rootUrl, tt.host)
+			url, err := HostStatusURL(tt.rootURL, tt.host)
 			assert.Nil(err)
-			assert.Equal(tt.expUrl, url)
+			assert.Equal(tt.expURL, url)
 		})
 	}
 }

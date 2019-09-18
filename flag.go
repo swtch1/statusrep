@@ -7,7 +7,7 @@ import (
 
 var (
 	defaultLogLevel = "info"
-	defaultRootUrl  = "http://storage.googleapis.com/revsreinterview/hosts"
+	defaultRootURL  = "http://storage.googleapis.com/revsreinterview/hosts"
 )
 
 // Flag defines command line flags given at runtime.
@@ -19,8 +19,8 @@ type Flag struct {
 	LogLevel string
 	// HostsFile contains the list of hosts to query, one per line.
 	HostsFile string
-	// RootUrl is the base url for host status pages.
-	RootUrl string
+	// RootURL is the base url for host status pages.
+	RootURL string
 }
 
 func (f *Flag) Parse() {
@@ -48,10 +48,10 @@ func (f *Flag) defineAllFlags() {
 		"File containing the list of servers to query, one per line.",
 	)
 	flaggy.String(
-		&f.RootUrl,
+		&f.RootURL,
 		"r",
 		"root-url",
-		fmt.Sprintf("The root URL where host paths can be found.  This URL will be prepended to all queries. (default: %s)", defaultRootUrl),
+		fmt.Sprintf("The root URL where host paths can be found.  This URL will be prepended to all queries. (default: %s)", defaultRootURL),
 	)
 }
 
@@ -59,8 +59,8 @@ func (f *Flag) setDefaults() {
 	if f.LogLevel == "" {
 		f.LogLevel = defaultLogLevel
 	}
-	if f.RootUrl == "" {
-		f.RootUrl = defaultRootUrl
+	if f.RootURL == "" {
+		f.RootURL = defaultRootURL
 	}
 }
 
