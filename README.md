@@ -11,4 +11,8 @@ Run `build.sh` to test and build statusrep.
 ### Usage
 To use statusrep, pass in a list of servers to query, along with the status endpoint.  A report will be printed to stdout.
 
+```bash
+statusrep --hosts-file ./hosts.txt
+```
+
 For more information run `statusrep --help`.
